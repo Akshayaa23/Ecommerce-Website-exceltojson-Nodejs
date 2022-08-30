@@ -74,7 +74,7 @@ const listOrder = async (req, res) => {
             a = [...a, ...c.items]
             return a
         }, [])
-        products = await Product.find({ _id: { $in: products } })
+        products = await Product.find({ _id: { $in: products }})
         res.json({
             result : result,
             items : products
