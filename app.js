@@ -10,20 +10,57 @@ const categoryRoute = require('./routes/categoryRoute')
 const productRoute = require('./routes/productRoute')
 
 const db = require('./database/models');
-db.mongoose.connect(`mongodb://${configs.HOST}:${configs.PORT}/${configs.DB}`, 
-{
-    useNewUrlParser:true, 
-    useUnifiedTopology:true
-},(err,info)=>{
-    if(info) console.log(httpCode.dbsuccess)
-    else (console.log(httpCode.dberror,err))
-})
+db.mongoose.connect(`mongodb://${configs.HOST}:${configs.PORT}/${configs.DB}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.log("Successfully connect to MongoDB.");
+    
+    initial();
+  })
+  .catch(err => {
+    console.error("Connection error", err);
+    process.exit();
+  });
 
-app.listen(process.env.PORT,()=>console.log(httpCode.serversuccess))
-
+const Role = db.role;
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-
+function initial() {
+    Role.estimatedDocumentCount((err, count) => {
+      if (!err && count === 0) {
+        new Role({
+          name: "user"
+        }).save(err => {
+          if (err) {
+            console.log("error", err);
+          }
+          console.log("added 'user' to roles collection");
+        });
+        new Role({
+          name: "moderator"
+        }).save(err => {
+          if (err) {
+            console.log("error", err);
+          }
+          console.log("added 'moderator' to roles collection");
+        });
+        new Role({
+          name: "admin"
+        }).save(err => {
+          if (err) {
+            console.log("error", err);
+          }
+          console.log("added 'admin' to roles collection");
+        });
+      }
+    });
+  }
+  
+  
 app.use('/api/auth',authRoute)
 app.use('/api/categories',categoryRoute)
 app.use('/api/products', productRoute)
+app.listen(process.env.PORT,()=>console.log(httpCode.serversuccess))
+

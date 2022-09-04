@@ -1,15 +1,13 @@
 const express = require('express')
 const router = express.Router()
-
 const userController = require('../controllers/userController')
 const orderControllers = require('../controllers/orderController')
-const verifyToken = require('../middleware/verifyToken')
-
-router.post('/register', userController.register)
-router.post('/login', userController.login)
-router.post('/addcart',verifyToken.checkToken,orderControllers.orderplace)
-router.get('/listcart',verifyToken.checkToken,orderControllers.listcart)
-router.post('/orderdetails',verifyToken.checkToken,orderControllers.orderDetails)
-router.get('/listorder',verifyToken.checkToken,orderControllers.listOrder)
+const {authJwt} = require('../middleware')
+router.post('/register', userController.signup)
+router.post('/login', userController.signin)
+router.post('/addcart',[authJwt.verifyToken, authJwt.isModerator],orderControllers.orderplace)
+router.get('/listcart',[authJwt.verifyToken, authJwt.isModerator],orderControllers.listcart)
+router.post('/orderdetails',[authJwt.verifyToken, authJwt.isAdmin],orderControllers.orderDetails)
+router.get('/listorder',[authJwt.verifyToken, authJwt.isAdmin],orderControllers.listOrder)
 
 module.exports = router

@@ -14,13 +14,13 @@ const userSchema = new Schema({
         unique:true,
         lowercase: true
     },
-    role:[{
+    roles:[{
         type: Schema.Types.ObjectId,
         ref: 'role'
     }],
     phone: {
         type:String,
-        required:true,
+        required:false,
         unique:true
     },
     password: {
