@@ -1,6 +1,6 @@
 const express = require('express')
 const configs = require('./configs/config')
-const httpCode = require('./configs/httpCode')
+const httpCode = require('./configs/codeMsg')
 const dotenv = require('dotenv')
 dotenv.config()
 const app = express()

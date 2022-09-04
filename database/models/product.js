@@ -33,9 +33,7 @@ const productSchema = new Schema({
     },
     countInStock: {
         type: Number,
-        required: true,
-        min:0,
-        max:255
+        required: true
     },
     rating: {
         type: Number,
@@ -53,7 +51,7 @@ const productSchema = new Schema({
         type: Date,
         default: Date.now
     },
-})
+},{timestamps:true})
 
 
 const Product = mongoose.model('Product', productSchema)

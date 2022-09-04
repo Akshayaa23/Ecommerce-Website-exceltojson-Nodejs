@@ -1,21 +1,7 @@
 const Category = require('../database/models/category')
 const Product = require('../database/models/product')
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
-
-const verifyToken = (req, res, next) => {
-    let token = req.headers["x-access-token"];
-    if (!token) {
-      return res.status(403).send({ message: "No token provided!" });
-    }
-    jwt.verify(token, process.env.secret, (err, decoded) => {
-      if (err) {
-        return res.status(401).send({ message: "Unauthorized!" });
-    }
-    req.userId = decoded.id;
-    next();
-    });
-};
 
 
 //get all products
@@ -164,5 +150,5 @@ const getFeaturedlimit = async(req,res) => {
 
 
 module.exports = {
-    index,show,store,update,destroy,totalCount,getFeaturedlimit,verifyToken
+    index,show,store,update,destroy,totalCount,getFeaturedlimit
 }

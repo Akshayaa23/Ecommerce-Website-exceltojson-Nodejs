@@ -1,6 +1,7 @@
 const User = require('../database/models/user')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const Role = require('../database/models/role')
 
 const register = async (req, res, next) => {
     try {
@@ -20,17 +21,37 @@ const register = async (req, res, next) => {
                 let user = new User({
                     name: req.body.name,
                     email: req.body.email,
+                    role: req.body.role,
                     phone: req.body.phone,
-                    password: hashedPass
+                    password: hashedPass,
                 })
-                await user.save()
-                res.json({
-                    message: 'User added successfully',
-                    data: user
+                await user.save((err,user) => {
+                    if(err) {
+                        res.status(500).json({message:err})
+                    }
+                    if(req.body.roles){
+                        Role.find(
+                            {
+                                role:{$in: req.body.roles}
+                            },(err,roles) => {
+                                if(err){
+                                    return res.status(500).send({message:err})
+                                }
+                                user.roles = roles.map(role => role._id)
+                                user.save(err => {
+                                    if(err){
+                                        return res.status(500).send({message: err})
+                                    }
+                                    return res.json({
+                                        message: 'User added successfully',
+                                        data: user
+                                    })
+                                })
+                            })
+                    }
                 })
             })
         }
-
     }
     catch (error) {
         res.status(400).json({
@@ -54,10 +75,11 @@ const login = (req, res, next) => {
                         })
                     }
                     if (result){
-                        let token = jwt.sign({id:user.id}, process.env.secret, {expiresIn: '2d'})
+                        let token = jwt.sign({id:user.id, name:user.name, role: user.role,email: user.email}, process.env.secret, {expiresIn: '2d'})
                         res.json({
                             message: 'login successfull',
-                            token
+                            token,
+                            role:user.role
                         })
                     } else {
                         res.json({

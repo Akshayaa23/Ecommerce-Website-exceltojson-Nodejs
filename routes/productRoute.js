@@ -1,9 +1,11 @@
-const router = require('express').Router()
+const express = require('express')
+const router = express.Router()
 
 const products = require('../controllers/products')
+const verifyToken = require('../middleware/verifyToken')
 
 router.get('/', products.index)
-router.get('/show/:id',products.verifyToken, products.show)
+router.get('/show/:id',verifyToken.checkToken, products.show)
 router.post('/store',products.store)
 router.put('/update/:id',products.update)
 router.delete('/delete/:id',products.destroy)
