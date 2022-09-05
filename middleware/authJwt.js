@@ -21,8 +21,9 @@ verifyToken = (req, res, next) => {
     next();
   });
 };
+
 isAdmin = (req, res, next) => {
-  User.findByI(req.userId).exec((err, user) => {
+  User.findById(req.userId).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
@@ -48,7 +49,8 @@ isAdmin = (req, res, next) => {
     );
   });
 };
-isModerator = (req, res, next) => {
+
+isUser = (req, res, next) => {
   User.findById(req.userId).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
@@ -64,12 +66,12 @@ isModerator = (req, res, next) => {
           return;
         }
         for (let i = 0; i < roles.length; i++) {
-          if (roles[i].name === "moderator") {
+          if (roles[i].name === "user") {
             next();
             return;
           }
         }
-        res.status(403).send({ message: "Require Moderator Role!" });
+        res.status(403).send({ message: "Require user Role!" });
         return;
       }
     );
@@ -78,6 +80,7 @@ isModerator = (req, res, next) => {
 const authJwt = {
   verifyToken,
   isAdmin,
-  isModerator
+  isUser
 };
+
 module.exports = authJwt;

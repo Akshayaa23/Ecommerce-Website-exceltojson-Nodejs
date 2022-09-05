@@ -1,10 +1,11 @@
-const db = require("../models");
+const db = require("../database/models");
 const ROLES = db.ROLES;
 const User = db.user;
+
 checkDuplicateUsernameOrEmail = (req, res, next) => {
-  // Username
+  //name
   User.findOne({
-    username: req.body.username
+    name: req.body.name
   }).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
@@ -30,6 +31,7 @@ checkDuplicateUsernameOrEmail = (req, res, next) => {
     });
   });
 };
+
 checkRolesExisted = (req, res, next) => {
   if (req.body.roles) {
     for (let i = 0; i < req.body.roles.length; i++) {
@@ -43,6 +45,7 @@ checkRolesExisted = (req, res, next) => {
   }
   next();
 };
+
 verifyTokenandAuthorization = (req,res,next)=>{
     if(req.user_id == req.params.id){
         next();

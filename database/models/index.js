@@ -8,5 +8,5 @@ db.product = require("./product");
 db.category = require('./category');
 db.gotocart = require('./gotocart');
 db.order = require('./order');
-db.ROLES = ["user","admin","moderator"];
+db.ROLES = ["user","admin"];
 module.exports = db;  

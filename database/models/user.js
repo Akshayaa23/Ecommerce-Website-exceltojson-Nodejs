@@ -14,10 +14,12 @@ const userSchema = new Schema({
         unique:true,
         lowercase: true
     },
-    roles:[{
-        type: Schema.Types.ObjectId,
-        ref: 'role'
-    }],
+    roles: [  
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Role"
+        }
+      ],
     phone: {
         type:String,
         required:false,
