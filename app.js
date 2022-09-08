@@ -9,7 +9,9 @@ const authRoute = require('./routes/authRoute')
 const categoryRoute = require('./routes/categoryRoute')
 const productRoute = require('./routes/productRoute')
 
+
 const db = require('./database/models');
+const { errmsg } = require('./configs/codeMsg')
 db.mongoose.connect(`mongodb://${configs.HOST}:${configs.PORT}/${configs.DB}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -49,8 +51,8 @@ function initial() {
       }
     });
   }
-  
-  
+
+ 
 app.use('/api/auth',authRoute)
 app.use('/api/categories',categoryRoute)
 app.use('/api/products', productRoute)
