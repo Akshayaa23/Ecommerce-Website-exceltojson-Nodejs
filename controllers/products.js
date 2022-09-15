@@ -55,23 +55,7 @@ const destroy = async(req,res) => {
         res.status(400).send({success:false,msg:error.message})
     }
 }
-
-//update
-// const update = async(req,res) => {
-//     try{
-//     let filename = 'uploads/products.xlsx';
-//     let workbook = new Excel.Workbook();
-//     await workbook.xlsx.readFile(filename);
-//     let worksheet = workbook.getWorksheet("Sheet1");
-//     let row = worksheet.getRow('2');
-//     row.getCell('I').value = 100;
-//     row.commit();
-//     workbook.xlsx.writeFile('uploads/updated.xlsx');
-//     return res.status(200).json({message: "product updated"})
-//     }catch(error){
-//         res.status(400).json({error: "error occured!!"})
-//     }
-// }
+res.status(400).json({error: "error occured!!"})
 
 //get count of products
 const totalCount = async(req,res) => {
