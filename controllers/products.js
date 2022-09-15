@@ -6,18 +6,8 @@ const uploadproduct = async (req, res) => {
     var sheetName = workbook.SheetNames;
     sheetName.forEach(async()=> {
         var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName[0]]);
-        // add data
         for (let i = 0; i < xlData.length; i++) {
-            if (xlData[i].product_id || !xlData[i]._id) {
-              await Products.create(xlData[i]) ;
-                console.log(xlData[i],"product added");
-            } else {
-                // update
-                const productExist = await Products.findOneAndUpdate(xlData[i].product_id) 
-                if ((JSON.stringify(productExist) === JSON.stringify(xlData[i]))) {
-                    await Products.updateOne({product_id:xlData[i].product_id},{$set:xlData[i]},{new:true});
-                }
-            }
+            await Products.findOneAndUpdate({ product_id: xlData[i].product_id }, xlData[i], { new: true, upsert: true })
         }
 res.json(xlData)
 })
