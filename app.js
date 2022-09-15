@@ -51,10 +51,8 @@ function initial() {
       }
     });
   }
-
  
 app.use('/api/auth',authRoute)
 app.use('/api/categories',categoryRoute)
 app.use('/api/products', productRoute)
 app.listen(process.env.PORT,()=>console.log(httpCode.serversuccess))
-

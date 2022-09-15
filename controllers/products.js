@@ -1,44 +1,26 @@
 const Products = require('../database/models/product')
-const excelToJson = require('convert-excel-to-json');
+const XLSX = require('xlsx');
 
-// upload
-const uploadproduct = async(req,res,next) => {
-  try{
-      const file = req.file.path
-      let excelData = excelToJson({
-        sourceFile: file,
-          header: {
-            rows: 1
-          },
-          columnToKey: {
-            A:'ids',
-            B:'name',
-            C:'description',
-            D:'richDescription',
-            E:'image',
-            F:'brand',
-            G:'price',
-            H:'category',
-            I:'countInStock',
-            J:'rating',
-            K:'numRevies',
-          }
-    })
-    console.log(excelData)
-    
-    excelData = await Products.insertMany(excelData.Sheet1)
-    // excelData = await Products.findOneAndUpdate({ids : excelData.map(a=>a.ids)},
-    // {$set: {$or:[{name: excelData.map(a=>a.name)},{price: excelData.map(a=>a.price)}]}},{upsert : true})
-
-    res.json({
-        status: 200,
-        message: 'Added successfully',
-        excelData
-    })
-  }catch(error){ res.status(400).json({
-      message:error.message
-    })
-  }
+const uploadproduct = async (req, res) => {
+    var workbook = XLSX.readFile(req.file.path);
+    var sheetName = workbook.SheetNames;
+    sheetName.forEach(async()=> {
+        var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName[0]]);
+        // add data
+        for (let i = 0; i < xlData.length; i++) {
+            if (xlData[i].product_id || !xlData[i]._id) {
+              await Products.create(xlData[i]) ;
+                console.log(xlData[i],"product added");
+            } else {
+                // update
+                const productExist = await Products.findOneAndUpdate(xlData[i].product_id) 
+                if ((JSON.stringify(productExist) === JSON.stringify(xlData[i]))) {
+                    await Products.updateOne({product_id:xlData[i].product_id},{$set:xlData[i]},{new:true});
+                }
+            }
+        }
+res.json(xlData)
+})
 }
 
 //get products
@@ -83,6 +65,23 @@ const destroy = async(req,res) => {
         res.status(400).send({success:false,msg:error.message})
     }
 }
+
+//update
+// const update = async(req,res) => {
+//     try{
+//     let filename = 'uploads/products.xlsx';
+//     let workbook = new Excel.Workbook();
+//     await workbook.xlsx.readFile(filename);
+//     let worksheet = workbook.getWorksheet("Sheet1");
+//     let row = worksheet.getRow('2');
+//     row.getCell('I').value = 100;
+//     row.commit();
+//     workbook.xlsx.writeFile('uploads/updated.xlsx');
+//     return res.status(200).json({message: "product updated"})
+//     }catch(error){
+//         res.status(400).json({error: "error occured!!"})
+//     }
+// }
 
 //get count of products
 const totalCount = async(req,res) => {

@@ -28,7 +28,7 @@ const orderplace = async (req, res) => {
 const listcart = async (req, res) => {
     try {
         let orders = await gotocart.find({ userId: req.userId }).populate('productId')
-        orders = await gotocart.countDocuments({_id : orders.map(a=>a._id)})
+        //orders = await gotocart.countDocuments({_id : orders.map(a=>a._id)})
 //       let u= orders.find(a=>a._id)==orders.find(a=>a._id )
 //       console.log(u)
 // {

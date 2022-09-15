@@ -60,7 +60,7 @@ exports.signin = async (req, res) => {
   User.findOne({name: req.body.name}).populate("roles", "-__v").exec((err, user) => {
       if (err) {
         res.status(500).send({ message: err });
-        return;
+        return;   
       }
       if (!user) {
         return res.status(404).send({ message: "User Not found." });
